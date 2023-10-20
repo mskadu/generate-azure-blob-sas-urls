@@ -35,7 +35,7 @@ The following steps are only necessary the first time this tool is set up
 
 1. Open a terminal session
 2. cd `<git repository directory>`
-3. Execute the command `poetry virtualenvs.in-project true`
+3. Execute the command `poetry config virtualenvs.in-project true`
 4. Execute the command `poetry install`
 5. If there are no errors displayed, execute the command `poetry shell`
 6. In a new browser window, navigate to the [Azure Portal](https://portal.azure.com/) and login
