@@ -2,7 +2,7 @@
 name = "generate-blob-sas-urls"
 version = "0.1.0"
 description = "A command line tool to generate a Shared Access Signature (SAS) URLs for a given blob file within Azure Blog storage"
-authors = ["Mayuresh Kadu <mayuresh.kadu@kainos.com>"]
+authors = ["Mayuresh Kadu <mskadu@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
