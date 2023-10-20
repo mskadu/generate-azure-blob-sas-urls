@@ -1,0 +1,6 @@
+{
+    "storage_account_name": "<Azure storage account name>",
+    "storage_account_connection_string": "<Azure storage account connection string>",
+    "storage_account_key": "<Azure storage account key>",
+    "container_name": "<Name of the container within the above storage account>" 
+}
