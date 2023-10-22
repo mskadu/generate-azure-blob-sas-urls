@@ -67,7 +67,7 @@ def read_config(config_file_name):
         with open(config_file_name, "r") as file:
             config = json.load(file)
             return config
-    except FileNotFoundError:
+    except FileNotFoundError as e:
         print(f"Error reading config file: {e}")
         return None
     except json.JSONDecodeError as e:

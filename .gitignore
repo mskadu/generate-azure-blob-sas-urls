@@ -1,3 +1,4 @@
 .vscode/*
 .venv/*
 config.json 
+generate-blob-sas-url.py
