@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-azure-storage-blob = "^12.20.0"
+azure-storage-blob = "^12.21.0"
 azure-identity = "^1.17.1"
 
 [build-system]
