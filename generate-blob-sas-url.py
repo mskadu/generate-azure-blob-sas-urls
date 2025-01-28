@@ -1,7 +1,12 @@
-from azure.storage.blob import generate_blob_sas, BlobSasPermissions, BlobClient
-from datetime import datetime, timedelta
-import sys
+import argparse
 import json
+from datetime import datetime, timedelta, timezone
+
+import truststore
+from azure.storage.blob import BlobClient, BlobSasPermissions, generate_blob_sas
+
+# Inject the truststore into the SSL context
+truststore.inject_into_ssl()
 
 # config file to use to read the settings from
 CONFIG_FILE = "config.json"
@@ -38,7 +43,7 @@ def generate_sas(account_name, account_key, container_name, blob_name, expiry_ti
 
 
 def blob_exists(connection_string, container_name, blob_name):
-    """Check whether the given blobname exists in the specified container
+    """Check whether the given blobname exists in the specified container using the BlobClient class from the azure.storage.blob module
 
     Args:
         connection_string (_str_): _Azure storage account connection string_
@@ -48,10 +53,16 @@ def blob_exists(connection_string, container_name, blob_name):
     Returns:
         _boolean_: _indicating whether blob exists within the specified container and storage account_
     """
-    blob = BlobClient.from_connection_string(
-        conn_str=connection_string, container_name=container_name, blob_name=blob_name
-    )
-    return blob.exists()
+    try:
+        blob = BlobClient.from_connection_string(
+            conn_str=connection_string,
+            container_name=container_name,
+            blob_name=blob_name,
+        )
+        return blob.exists()
+    except Exception as e:
+        print(f"Error checking whether {blob_name} exists: {e}")
+        exit(1)
 
 
 def read_config(config_file_name):
@@ -85,7 +96,7 @@ def fetch_config_key(config, config_key):
     Returns:
         _str_: _config value for the specified key_
     """
-    config_value = config.get(config_key)
+    config_value = config[config_key]
     if config_value is None:
         print(f"Error - {CONFIG_FILE} did not have a key named '{config_key}'")
         exit(1)
@@ -94,14 +105,20 @@ def fetch_config_key(config, config_key):
 
 # Entry point
 if __name__ == "__main__":
-    # the first argument is mandatory
-    args_count = len(sys.argv)
-    if args_count == 1:
-        print("Error - no arguments passed")
-        exit(1)
+    parser = argparse.ArgumentParser(
+        description="Generate SAS URL for Azure Blob Storage file"
+    )
+    parser.add_argument("filename", type=str, help="Name of the file in blob storage")
+    parser.add_argument(
+        "--config",
+        type=str,
+        default=CONFIG_FILE,
+        help="Path to config file (default: config.json)",
+    )
+    args = parser.parse_args()
 
     # load config file
-    config = read_config(CONFIG_FILE)
+    config = read_config(args.config)
     if not config:
         exit(1)
 
@@ -112,9 +129,9 @@ if __name__ == "__main__":
     container_name = fetch_config_key(config, "container_name")
 
     # Define the expiry time for the SAS
-    expiry_time = datetime.utcnow() + timedelta(days=30)
+    expiry_time = datetime.now(timezone.utc) + timedelta(days=30)
 
-    blob_name = sys.argv[1]
+    blob_name = args.filename
     # check if blob exists in the specified container within the storage account
     if blob_exists(connect_str, container_name, blob_name):
         # generate and print the SAS
