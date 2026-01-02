@@ -1,2 +1,2 @@
 azure-storage-blob==12.27.1
-truststore==0.10.1
+truststore==0.10.4
