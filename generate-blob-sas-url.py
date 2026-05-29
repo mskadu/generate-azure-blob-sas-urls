@@ -2,11 +2,7 @@ import argparse
 import json
 from datetime import datetime, timedelta, timezone
 
-import truststore
 from azure.storage.blob import BlobClient, BlobSasPermissions, generate_blob_sas
-
-# Inject the truststore into the SSL context
-truststore.inject_into_ssl()
 
 # config file to use to read the settings from
 CONFIG_FILE = "config.json"
